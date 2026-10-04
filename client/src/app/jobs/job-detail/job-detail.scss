@@ -1,0 +1,85 @@
+.steps {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0.5rem;
+  font-size: 0.8rem;
+  text-align: center;
+
+  li[data-state='done'] {
+    color: var(--accent);
+  }
+
+  li[data-state='current'] {
+    font-weight: 700;
+  }
+
+  li[data-state='upcoming'] {
+    color: var(--muted);
+  }
+}
+
+.bar {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--track);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+
+  h2 {
+    font-size: 1rem;
+    margin: 0.5rem 0 0;
+  }
+}
+
+.inline {
+  display: flex;
+  gap: 0.5rem;
+
+  input {
+    flex: 1;
+  }
+}
+
+.timeline {
+  list-style: none;
+  padding: 0 0 0 1rem;
+  margin: 0;
+  border-left: 2px solid var(--border);
+  display: grid;
+  gap: 0.9rem;
+
+  li {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  p {
+    margin: 0.2rem 0 0;
+  }
+}

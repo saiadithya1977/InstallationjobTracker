@@ -1,0 +1,97 @@
+<section class="page">
+  <header class="page-head">
+    <h1>Jobs</h1>
+    <button type="button" class="btn" (click)="showCreate.set(!showCreate())">
+      {{ showCreate() ? 'Cancel' : 'New job' }}
+    </button>
+  </header>
+
+  @if (showCreate()) {
+    <form class="card create" [formGroup]="createForm" (ngSubmit)="submitJob()">
+      <label>
+        Customer name
+        <input formControlName="customerName" autocomplete="off" />
+        @if (createForm.controls.customerName.touched && createForm.controls.customerName.invalid) {
+          <small class="error">Customer name is required.</small>
+        }
+      </label>
+      <label>
+        Address
+        <input formControlName="address" autocomplete="off" />
+        @if (createForm.controls.address.touched && createForm.controls.address.invalid) {
+          <small class="error">Address is required.</small>
+        }
+      </label>
+      <label>
+        Product
+        <select formControlName="productType">
+          @for (p of productTypes; track p) {
+            <option [value]="p">{{ label(p) }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Assignee
+        <input formControlName="assignee" autocomplete="off" />
+      </label>
+      <button type="submit" class="btn primary" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Create job' }}</button>
+    </form>
+  }
+
+  <form class="filters" [formGroup]="filters" role="search">
+    <input type="search" formControlName="search" placeholder="Search customer or address" aria-label="Search" />
+    <select formControlName="stage" aria-label="Stage">
+      <option value="">All stages</option>
+      @for (s of stages; track s) {
+        <option [value]="s">{{ label(s) }}</option>
+      }
+    </select>
+    <select formControlName="productType" aria-label="Product">
+      <option value="">All products</option>
+      @for (p of productTypes; track p) {
+        <option [value]="p">{{ label(p) }}</option>
+      }
+    </select>
+    <button type="button" class="btn" (click)="clearFilters()">Clear</button>
+  </form>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <table class="card">
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Product</th>
+        <th>Stage</th>
+        <th>Days in stage</th>
+        <th>Assignee</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (job of jobs(); track job.id) {
+        <tr>
+          <td>
+            <a [routerLink]="['/jobs', job.id]">{{ job.customerName }}</a>
+            <div class="muted small">{{ job.address }}</div>
+          </td>
+          <td>{{ label(job.productType) }}</td>
+          <td><span class="badge" [attr.data-stage]="job.stage">{{ label(job.stage) }}</span></td>
+          <td [class.warn]="job.daysInStage >= 7">{{ job.daysInStage }}</td>
+          <td>{{ job.assignee ?? '—' }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" class="muted">{{ loading() ? 'Loading…' : 'No jobs match these filters.' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <nav class="pager" aria-label="Pagination">
+    <button type="button" class="btn" [disabled]="page() === 0" (click)="goToPage(page() - 1)">Previous</button>
+    <span class="muted">Page {{ page() + 1 }} of {{ pageCount }} · {{ total() }} jobs</span>
+    <button type="button" class="btn" [disabled]="page() + 1 >= pageCount" (click)="goToPage(page() + 1)">Next</button>
+  </nav>
+</section>

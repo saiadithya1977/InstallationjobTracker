@@ -1,0 +1,29 @@
+<section class="page">
+  <header class="page-head">
+    <h1>Installation pipeline</h1>
+    <a class="btn" routerLink="/jobs">View all jobs</a>
+  </header>
+
+  @if (loading()) {
+    <p class="muted">Loading pipeline…</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else {
+    <div class="stats">
+      <div class="stat"><span class="stat-value">{{ total() }}</span><span class="muted">Total jobs</span></div>
+      <div class="stat"><span class="stat-value">{{ active() }}</span><span class="muted">In progress</span></div>
+    </div>
+
+    <ol class="pipeline">
+      @for (s of summary(); track s.stage) {
+        <li>
+          <a [routerLink]="['/jobs']" [queryParams]="{ stage: s.stage }" class="stage-row">
+            <span class="stage-name">{{ label(s.stage) }}</span>
+            <span class="bar"><span class="fill" [style.width.%]="barWidth(s.count)"></span></span>
+            <span class="count" data-testid="stage-count">{{ s.count }}</span>
+          </a>
+        </li>
+      }
+    </ol>
+  }
+</section>

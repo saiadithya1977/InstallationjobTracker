@@ -1,0 +1,10 @@
+<header class="topbar">
+  <a routerLink="/" class="brand">Installation Job Tracker</a>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Pipeline</a>
+    <a routerLink="/jobs" routerLinkActive="active">Jobs</a>
+  </nav>
+</header>
+<main>
+  <router-outlet />
+</main>

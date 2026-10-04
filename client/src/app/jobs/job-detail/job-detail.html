@@ -1,0 +1,66 @@
+<section class="page">
+  <a routerLink="/jobs" class="muted small">← All jobs</a>
+
+  @if (loading()) {
+    <p class="muted">Loading job…</p>
+  }
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (job(); as j) {
+    <header class="page-head">
+      <div>
+        <h1>{{ j.customerName }}</h1>
+        <p class="muted">{{ j.address }} · {{ label(j.productType) }}</p>
+      </div>
+      <span class="badge" [attr.data-stage]="j.stage">{{ label(j.stage) }}</span>
+    </header>
+
+    <ol class="steps" aria-label="Job progress">
+      @for (s of stages; track s) {
+        <li [attr.data-state]="stageState(s)">{{ label(s) }}</li>
+      }
+    </ol>
+    <div class="bar" role="progressbar" [attr.aria-valuenow]="progress()" aria-valuemin="0" aria-valuemax="100">
+      <span class="fill" [style.width.%]="progress()"></span>
+    </div>
+
+    <div class="grid">
+      <div class="card panel">
+        <h2>Next step</h2>
+        @if (isComplete()) {
+          <p class="muted">This job is complete.</p>
+        } @else {
+          <label for="note">Note for this stage change (optional)</label>
+          <textarea id="note" rows="3" [(ngModel)]="note" maxlength="500"></textarea>
+          <button type="button" class="btn primary" [disabled]="busy()" (click)="advance()">
+            Move to {{ label(stages[stages.indexOf(j.stage) + 1]) }}
+          </button>
+        }
+
+        <h2>Assignee</h2>
+        <div class="inline">
+          <input [(ngModel)]="assignee" aria-label="Assignee" placeholder="Unassigned" />
+          <button type="button" class="btn" [disabled]="busy()" (click)="saveAssignee()">Save</button>
+        </div>
+        <p class="muted small">In current stage for {{ j.daysInStage }} day(s).</p>
+      </div>
+
+      <div class="card panel">
+        <h2>History</h2>
+        <ol class="timeline">
+          @for (e of j.history ?? []; track e.id) {
+            <li>
+              <strong>{{ e.fromStage ? label(e.fromStage) + ' → ' : '' }}{{ label(e.toStage) }}</strong>
+              <span class="muted small">{{ e.changedAt | date: 'medium' }}</span>
+              @if (e.note) {
+                <p>{{ e.note }}</p>
+              }
+            </li>
+          }
+        </ol>
+      </div>
+    </div>
+  }
+</section>
